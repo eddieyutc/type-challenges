@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 /*
   4 - Pick
   -------
@@ -31,7 +32,9 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyPick<T, K> = any
+type MyPick<T, K extends keyof T> = {
+  [key in K]: T[key]
+}
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -40,7 +43,7 @@ type cases = [
   Expect<Equal<Expected1, MyPick<Todo, 'title'>>>,
   Expect<Equal<Expected2, MyPick<Todo, 'title' | 'completed'>>>,
   // @ts-expect-error
-  MyPick<Todo, 'title' | 'completed' | 'invalid'>,
+  MyPick<Todo, 'title' | 'completed' | 'invalid'>
 ]
 
 interface Todo {
