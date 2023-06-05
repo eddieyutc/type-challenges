@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/comma-dangle */
 /*
   189 - Awaited
   -------
@@ -22,7 +23,15 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyAwaited<T> = any
+// using PromiseLike fixes the testcase 5 whereas Promise doesn't
+
+type MyAwaited<T extends PromiseLike<any>> = T extends PromiseLike<infer U>
+  ? U extends PromiseLike<any>
+    ? MyAwaited<U>
+    : U
+  : never
+
+type testcase5 = MyAwaited<Promise<T>>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
@@ -38,7 +47,7 @@ type cases = [
   Expect<Equal<MyAwaited<Y>, { field: number }>>,
   Expect<Equal<MyAwaited<Z>, string | number>>,
   Expect<Equal<MyAwaited<Z1>, string | boolean>>,
-  Expect<Equal<MyAwaited<T>, number>>,
+  Expect<Equal<MyAwaited<T>, number>>
 ]
 
 // @ts-expect-error
