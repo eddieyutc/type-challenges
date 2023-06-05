@@ -20,7 +20,18 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyExclude<T, U> = any
+// https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#distributive-conditional-types
+
+// When a conditional type is acting on a union type, the condition is distributed over the types of the union.
+// The condition sort of acts like a map over the union type, and then combining them at the end
+// In Test case 1, the condition T extends U is applied to every member of T, i.e. 'a', 'b' and 'c'.
+// We have 3 conditional types operation in the union:
+// - 'a' extends 'a' ? never : 'a'
+// - 'b' extends 'a' ? never : 'b'
+// - 'c' extends 'a'? never : 'c'
+// Finally combining them results in the union type: 'b' | 'c'
+
+type MyExclude<T, U> = T extends U ? never : T
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
