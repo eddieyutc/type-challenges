@@ -18,7 +18,8 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Concat<T, U> = any
+type Tuple = readonly any[]
+type Concat<T extends Tuple, U extends Tuple> = [...T, ...U]
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
