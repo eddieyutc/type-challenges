@@ -18,7 +18,40 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Includes<T extends readonly any[], U> = any
+// my first try is to do U extends T[number]
+// but when T is {} and U is {a: 'A'}, the condition {a: 'A'} extends {} will also be true
+// I want to make sure that U is an exact match with one of the elements of T
+
+// this challenge is somewhat similar to the one in 00004-easy-pick
+// type MyPick<T, K extends keyof T> = {
+//  [key in K]: T[key]
+// }
+// In the sense that for Pick, we pick out the fields in T where the key is an exact match of K, by indexing T with K
+
+// In this challenge, we want to check if U is of the same type as the value of the array T
+// we can't use extends for comparison, instead we can use the indexed access to check for an exact match
+
+// We have to turn the value of the array T into the key of an object: { [V in T[number]]: V }
+// if U is an exact match of any of the value in T[number], the object access will return the value indexed by the key.
+// We then check if the value indexed is the same as U, and do a contional type.
+
+// test case 10 and 14 is failing, but we've made great progress.
+
+type Includes<T extends readonly any[], U> = {
+  [V in T[number]]: V
+}[U] extends U ? true : false
+
+type testcase1 = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Kars'>
+type testcase2 = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'>
+type testcase3 = Includes<[1, 2, 3, 5, 6, 7], 7>
+type testcase4 = Includes<[1, 2, 3, 5, 6, 7], 4>
+type testcase5 = Includes<[1, 2, 3], 2>
+type testcase6 = Includes<[1, 2, 3], 1>
+type testcase7 = Includes<[{}], { a: 'A' }>
+type testcase8 = Includes<[boolean, 2, 3, 5, 6, 7], false>
+type testcase9 = Includes<[true, 2, 3, 5, 6, 7], boolean>
+type testcase10 = Includes<[false, 2, 3, 5, 6, 7], false>
+type testcase14 = Includes<[1 | 2], 1>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
