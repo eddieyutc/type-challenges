@@ -25,7 +25,10 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyReturnType<T> = any
+// This is reminiscence of the last challenge 03312-easy-parameters
+// I'll do an infer on the return type and see how it goes
+
+type MyReturnType<T extends (...args: any[]) => any> = T extends (...args: infer Any) => infer Return ? Return : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
