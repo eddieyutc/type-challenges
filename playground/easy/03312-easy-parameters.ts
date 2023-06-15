@@ -20,7 +20,16 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyParameters<T extends (...args: any[]) => any> = any
+// T is a function type.
+// How can we extract the argument types out?
+// Is there a way to represent the type of the arguments?
+// Do a condition and use infer to pick out the arguments
+
+type MyParameters<T extends (...args: any[]) => any> = T extends (...args: infer X) => any ? X : never
+
+type testcase1 = MyParameters<typeof foo>
+type testcase2 = MyParameters<typeof bar>
+type testcase3 = MyParameters<typeof baz>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
