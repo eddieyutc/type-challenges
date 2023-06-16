@@ -30,7 +30,19 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyOmit<T, K> = any
+// we want our result to only contain keys not in K
+// and use those keys to index T in a mapped type
+
+// Tried different ways of operating on the key of T, but no luck
+// Going through the docs https://www.typescriptlang.org/docs/handbook/2/mapped-types.html#key-remapping-via-as
+// The `as` remapping section caught my eyes as they demostrate how to filter out keys via conditional type after the `as` clause
+
+type MyOmit<T, K extends keyof T> = {
+  [key in keyof T as (key extends K ? never : key)]: T[key]
+}
+
+type testcase1 = MyOmit<Todo, 'description'>
+type testcase2 = MyOmit<Todo, 'description' | 'completed'>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
