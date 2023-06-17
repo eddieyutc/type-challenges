@@ -34,7 +34,31 @@
 
 /* _____________ Your Code Here _____________ */
 
-type MyReadonly2<T, K> = any
+// reusing technique in 00003-medium-omit, combining the mapped type
+// of the readonly keys and non readonly keys
+
+// trying to fix the undefined K type argument test case
+// doing a condition on K to check if K is undefined
+// the result came out as a union of objects instead of a single one
+// remembering the distributive nature of conditional types, 
+// enclose the condition in bracket: [K] extends [undefined] ? ...
+
+// null, undefined, never all doesn't work
+// going to the docs, https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-parameter-defaults
+// default param is exactly what I need
+
+// also the condition can now be removed
+
+type MyReadonly2<T, K extends keyof T = keyof T> = //[K] extends [never] ? { readonly [key in keyof T]: T[key] : 
+{
+  readonly [key in K]: T[key]
+} &
+{
+  [key in keyof T as (key extends K ? never : key)]: T[key]
+}
+
+type testcase1 = MyReadonly2<Todo1>
+type testcase2 = MyReadonly2<Todo1, 'title' | 'description'>
 
 /* _____________ Test Cases _____________ */
 import type { Alike, Expect } from '@type-challenges/utils'
