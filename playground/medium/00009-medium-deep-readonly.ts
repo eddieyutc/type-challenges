@@ -36,7 +36,24 @@
 
 /* _____________ Your Code Here _____________ */
 
-type DeepReadonly<T> = any
+// remember doing recursive type in 00189-easy-awaited
+
+// also stealing the idea of Prettify from Matt Pocock: https://youtube.com/shorts/2lCCKiWGlC0?feature=share
+// to make it easier to debug
+
+type Prettify<T> = {
+  [key in keyof T]: T[key]
+} & {}
+
+type DeepReadonly<T> = {
+  readonly [key in keyof T]: T[key] extends Function
+    ? T[key]
+    : T[key] extends Record<any, any>
+      ? DeepReadonly<T[key]>
+      : T[key]
+}
+
+type testcase1 = DeepReadonly<X1>
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
