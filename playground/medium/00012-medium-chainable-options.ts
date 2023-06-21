@@ -39,15 +39,35 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Chainable = {
-  option(key: string, value: any): any
-  get(): any
+// need to reference the type of this object, also need to store the cuminated object
+
+// generic on <T = {}>, and return recursive type on option
+
+// option(key: string, value: any): Chainable<T & Record<typeof key, typeof value>>
+
+// Now it returns the object but the types for the key and value need fixing
+
+// apply another generic to enforce the type on the params
+
+// option<K extends string, V>(key: K, value: V): Chainable<T & Record<K, V>>
+
+// only thing left is throw error on repeated key
+
+// key: K extends keyof T ? never : K
+
+// and also remove the last repeated key
+
+type Chainable<T = {}> = {
+  option<K extends string, V>(key: K extends keyof T ? never : K, value: V): Chainable<Omit<T, K> & Record<K, V>>
+  get(): T
 }
 
 /* _____________ Test Cases _____________ */
 import type { Alike, Expect } from '@type-challenges/utils'
 
 declare const a: Chainable
+
+const testcase1 = a.option('foo', 123).get()
 
 const result1 = a
   .option('foo', 123)
