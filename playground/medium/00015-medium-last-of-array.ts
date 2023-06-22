@@ -24,7 +24,15 @@
 
 /* _____________ Your Code Here _____________ */
 
-type Last<T extends any[]> = any
+// It is easy to do Head, i.e. [infer Head, ...infer Rest]
+// but it would be quite challenging to do a Tail
+
+// how about doing a recursion until we reach the end?
+// T extends [infer Last] ? Last : T extends [infer Head, ...infer Rest] ? Last<Rest> : never
+
+// I was stupid I could have just reverse them [...infer First, infer Last]
+
+type Last<T extends any[]> = T extends [...infer First, infer Last] ? Last : never
 
 /* _____________ Test Cases _____________ */
 import type { Equal, Expect } from '@type-challenges/utils'
